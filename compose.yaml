@@ -1,0 +1,55 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql_app_sciencestreaming
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: sciencestreaming
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data/sciencestreaming.sql.gz:/docker-entrypoint-initdb.d/sciencestreaming.sql.gz
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin_app_sciencestreaming
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - 8081:80
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: mysql # Nom du service ! Pas du container/image !
+      PMA_USER: root
+      PMA_PASSWORD: ""
+  postgres:
+    image: postgres:latest
+    container_name: postgres_app_sciencestreaming
+    restart: always
+    environment:
+      POSTGRES_DB: sciencestreaming_data_env
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pw
+    ports:
+     - 5432:5432
+
+  adminer:
+    image: adminer:latest
+    container_name: adminer_app_sciencestreaming
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 8082:8080
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+      ADMINER_DEFAULT_USER: postgres
+      ADMINER_DEFAULT_PASSWORD: pw
+      ADMINER_DEFAULT_DB: sciencestreaming_data_env
+
+  collect_from_mysql:
+    build:
+      context: ./collect
