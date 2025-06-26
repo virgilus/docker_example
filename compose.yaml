@@ -51,5 +51,8 @@ services:
       ADMINER_DEFAULT_DB: sciencestreaming_data_env
 
   collect_from_mysql:
+    depends_on:
+      - mysql
+      - postgres
     build:
       context: ./collect

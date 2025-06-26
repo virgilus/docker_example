@@ -1,4 +1,4 @@
 pandas
 sqlalchemy
-pymysql
 mysqlclient
+psycopg2-binary
